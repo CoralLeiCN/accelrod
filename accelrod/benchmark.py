@@ -1,5 +1,6 @@
 from torch.utils import benchmark
 import torch
+import pandas as pd
 
 
 # determine device
@@ -10,6 +11,12 @@ def get_device():
         return "mps"
     else:
         return "cpu"
+
+
+def to_pandas(result):
+    df = pd.DataFrame(result, columns=["tflops", "time", "arithmetic_intensity"])
+    df["median_time"] = df["time"].apply(lambda x: x.median)
+    return df
 
 
 def benchmark_GEMM(matrix_shape, dtype=torch.float16, device=None, number=50):
