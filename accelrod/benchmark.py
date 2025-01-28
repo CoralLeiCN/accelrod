@@ -1,6 +1,7 @@
 from torch.utils import benchmark
 import torch
 import pandas as pd
+import matplotlib.pyplot as plt
 
 
 # determine device
@@ -18,6 +19,13 @@ def to_pandas(result):
     df["median_time"] = df["time"].apply(lambda x: x.median)
     return df
 
+def plot_result(df):
+    # plot the results, tflops against arithmetic intensity
+    plt.plot(df['arithmetic_intensity'], df['tflops'], 'o-')
+    plt.xlabel('Arithmetic Intensity')
+    plt.ylabel('TFLOPS')
+    plt.title('Performance')
+    plt.show()
 
 def benchmark_GEMM(matrix_shape, dtype=torch.float16, device=None, number=50):
     if device is None:
