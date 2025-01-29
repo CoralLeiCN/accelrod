@@ -19,13 +19,15 @@ def to_pandas(result):
     df["median_time"] = df["time"].apply(lambda x: x.median)
     return df
 
+
 def plot_result(df):
     # plot the results, tflops against arithmetic intensity
-    plt.plot(df['arithmetic_intensity'], df['tflops'], 'o-')
-    plt.xlabel('Arithmetic Intensity')
-    plt.ylabel('TFLOPS')
-    plt.title('Performance')
+    plt.plot(df["arithmetic_intensity"], df["tflops"], "o-")
+    plt.xlabel("Arithmetic Intensity")
+    plt.ylabel("TFLOPS")
+    plt.title("Performance")
     plt.show()
+
 
 def benchmark_GEMM(matrix_shape, dtype=torch.float16, device=None, number=50):
     if device is None:
@@ -60,6 +62,8 @@ def benchmark_GEMM(matrix_shape, dtype=torch.float16, device=None, number=50):
     # median tflops
     tflops = number_FLOPS / x.mean / 1e12
 
-    print(f"tflops: {tflops}, x: {x.mean}, arithmetic_intensity: {arithmetic_intensity}")
+    print(
+        f"tflops: {tflops}, x: {x.mean}, arithmetic_intensity: {arithmetic_intensity}"
+    )
 
     return tflops, x, arithmetic_intensity
