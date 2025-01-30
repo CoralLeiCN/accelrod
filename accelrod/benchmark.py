@@ -13,6 +13,10 @@ def get_device():
     else:
         return "cpu"
 
+# get bytes based on the dtype
+def get_bytes_by_dtype(dtype):
+    bytes_per_element = torch.tensor([], dtype=dtype).element_size()
+    return bytes_per_element
 
 def to_pandas(result):
     df = pd.DataFrame(result, columns=["tflops", "time", "arithmetic_intensity"])
@@ -35,15 +39,14 @@ def benchmark_GEMM(matrix_shape, dtype=torch.float16, device=None, number=50):
         print(f"device is None, automatically set to {device}")
 
     device = torch.device(device)
-    typ = dtype
     # get bytes based on the dtype
-    bytes_per_element = torch.tensor([], dtype=dtype).element_size()
+    bytes_per_element = get_bytes_by_dtype(dtype)
     print(f"dtype is {dtype}, bytes_per_element: {bytes_per_element}")
 
     (m, k, n) = matrix_shape
-    a = torch.randn(m, k, dtype=typ, device=device)
-    b = torch.randn(k, n, dtype=typ, device=device)
-    c = torch.randn(m, n, dtype=typ, device=device)
+    a = torch.randn(m, k, dtype=dtype, device=device)
+    b = torch.randn(k, n, dtype=dtype, device=device)
+    c = torch.randn(m, n, dtype=dtype, device=device)
     print(a.device)
     print(b.device)
     t = benchmark.Timer(
