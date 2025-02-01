@@ -2,6 +2,16 @@ from torch.utils import benchmark
 import torch
 import pandas as pd
 import matplotlib.pyplot as plt
+import subprocess
+
+
+def get_gpu_memory():
+    result = subprocess.check_output(
+        "nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits",
+        shell=True,
+        encoding="utf-8",
+    )
+    return float(result)
 
 
 # determine device
@@ -13,18 +23,21 @@ def get_device():
     else:
         return "cpu"
 
+
 def get_device_properties():
     if torch.cuda.is_available():
-        return torch.cuda.get_device_properties(torch.cuda.device('cuda'))
+        return torch.cuda.get_device_properties(torch.cuda.device("cuda"))
     elif torch.backends.mps.is_available():
-        return 
+        return
     else:
         return
-    
+
+
 # get bytes based on the dtype
 def get_bytes_by_dtype(dtype):
     bytes_per_element = torch.tensor([], dtype=dtype).element_size()
     return bytes_per_element
+
 
 def to_pandas(result):
     df = pd.DataFrame(result, columns=["tflops", "time", "arithmetic_intensity"])
@@ -73,8 +86,6 @@ def benchmark_GEMM(matrix_shape, dtype=torch.float16, device=None, number=50):
     # median tflops
     tflops = number_FLOPS / x.mean / 1e12
 
-    print(
-        f"tflops: {tflops}, x: {x.mean}, arithmetic_intensity: {arithmetic_intensity}"
-    )
+    print(f"tflops: {tflops}, x: {x.mean}, arithmetic_intensity: {arithmetic_intensity}")
 
     return tflops, x, arithmetic_intensity
