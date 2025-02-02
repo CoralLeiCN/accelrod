@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import subprocess
 
 
-def get_gpu_memory():
+def get_gpu_free_memory():
     result = subprocess.check_output(
         "nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits",
         shell=True,
