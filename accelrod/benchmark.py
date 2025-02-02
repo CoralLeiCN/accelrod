@@ -5,6 +5,24 @@ import matplotlib.pyplot as plt
 import subprocess
 
 
+def get_power_of_two_sequence(N):
+    """
+    Returns a list of integers where each number is a power of 2, the largest number <= N.
+
+    Args:
+        N (int): The upper limit of the sequence
+
+    Returns:
+        list: A list of powers of 2 up to N
+    """
+    sequence = []
+    power = 0
+    while 2**power <= N:
+        sequence.append(2**power)
+        power += 1
+    return sequence
+
+
 def get_gpu_free_memory():
     result = subprocess.check_output(
         "nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits",
@@ -65,11 +83,13 @@ def benchmark_GEMM(matrix_shape, dtype=torch.float16, device=None, number=50):
     print(f"dtype is {dtype}, bytes_per_element: {bytes_per_element}")
 
     (m, k, n) = matrix_shape
+    print(f"matrix shape: {matrix_shape}")
     a = torch.randn(m, k, dtype=dtype, device=device)
     b = torch.randn(k, n, dtype=dtype, device=device)
     c = torch.randn(m, n, dtype=dtype, device=device)
     print(a.device)
     print(b.device)
+    print(get_gpu_free_memory())
     t = benchmark.Timer(
         stmt=f"a @ b + c; torch.{device}.synchronize()",
         globals={"a": a, "b": b, "c": c},
