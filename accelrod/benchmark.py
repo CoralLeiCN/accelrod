@@ -3,6 +3,8 @@ import pandas as pd
 import torch
 from torch.utils import benchmark
 
+from accelrod.device import get_device, get_gpu_free_memory
+
 
 # get bytes based on the dtype
 def get_bytes_by_dtype(dtype):
