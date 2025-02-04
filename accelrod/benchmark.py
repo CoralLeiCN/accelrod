@@ -1,9 +1,11 @@
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import torch
 from torch.utils import benchmark
 
 from accelrod.device import get_device, get_gpu_free_memory
+from accelrod.utils import get_power_of_two_sequence
 
 
 # get bytes based on the dtype
@@ -25,6 +27,32 @@ def plot_result(df):
     plt.ylabel("TFLOPS")
     plt.title("Performance")
     plt.show()
+
+
+def benchmark_GEMM_wrapper(dtype=torch.float32):
+    """
+    run the benchmark for GEMM with different matrix size
+    """
+    # convert MB to bytes
+    total_free_bytes = get_gpu_free_memory() * 0.8 * 1024**2
+    # temporary assume benchmarking start with float64 so 8 bytes
+    max_n = np.sqrt(total_free_bytes / 5 / 8)
+
+    # Using your existing max_n value
+    sequence = get_power_of_two_sequence(max_n)
+    max_n = max(sequence)
+
+    result = []
+    for n in sequence:
+        # for n in [1024]:
+        result.append(
+            benchmark_GEMM(
+                matrix_shape=(max_n, n, max_n),
+                dtype=dtype,
+                number=20,
+            )
+        )
+    return result
 
 
 def benchmark_GEMM(matrix_shape, dtype=torch.float16, device=None, number=50):
