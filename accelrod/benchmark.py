@@ -33,10 +33,11 @@ def benchmark_GEMM_wrapper(dtype=torch.float32):
     """
     run the benchmark for GEMM with different matrix size
     """
+    bytes_per_element = get_bytes_by_dtype(dtype)
     # convert MB to bytes
     total_free_bytes = get_gpu_free_memory() * 0.8 * 1024**2
     # temporary assume benchmarking start with float64 so 8 bytes
-    max_n = np.sqrt(total_free_bytes / 5 / 8)
+    max_n = np.sqrt(total_free_bytes / 5 / bytes_per_element)
 
     # Using your existing max_n value
     sequence = get_power_of_two_sequence(max_n)
