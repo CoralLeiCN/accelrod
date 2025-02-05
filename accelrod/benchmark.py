@@ -29,7 +29,7 @@ def plot_result(df):
     plt.show()
 
 
-def benchmark_GEMM_wrapper(dtype=torch.float32):
+def benchmark_GEMM_wrapper(dtype=torch.float32, number=50):
     """
     run the benchmark for GEMM with different matrix size
     """
@@ -50,7 +50,7 @@ def benchmark_GEMM_wrapper(dtype=torch.float32):
             benchmark_GEMM(
                 matrix_shape=(max_n, n, max_n),
                 dtype=dtype,
-                number=20,
+                number=number,
             )
         )
     return result
