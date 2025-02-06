@@ -42,6 +42,7 @@ def benchmark_GEMM_wrapper(dtype=torch.float32, number=50):
     # Using your existing max_n value
     sequence = get_power_of_two_sequence(max_n)
     max_n = max(sequence)
+    print(get_gpu_free_memory())
 
     result = []
     for n in sequence:
@@ -56,28 +57,32 @@ def benchmark_GEMM_wrapper(dtype=torch.float32, number=50):
     return result
 
 
-def benchmark_GEMM(matrix_shape, dtype=torch.float16, device=None, number=50):
-    if device is None:
-        device = get_device()
-        print(f"device is None, automatically set to {device}")
-
-    device = torch.device(device)
-    # get bytes based on the dtype
-    bytes_per_element = get_bytes_by_dtype(dtype)
-    print(f"dtype is {dtype}, bytes_per_element: {bytes_per_element}")
-
-    (m, k, n) = matrix_shape
-    print(f"matrix shape: {matrix_shape}")
+def timer_GEMM(m, k, n, dtype=torch.float32, device=None, number=50) -> benchmark.Timer:
     a = torch.randn(m, k, dtype=dtype, device=device)
     b = torch.randn(k, n, dtype=dtype, device=device)
     c = torch.randn(m, n, dtype=dtype, device=device)
-    print(a.device)
-    print(b.device)
-    print(get_gpu_free_memory())
+
     t = benchmark.Timer(
         stmt=f"a @ b + c; torch.{device}.synchronize()",
         globals={"a": a, "b": b, "c": c},
     )
+    return t
+
+
+def benchmark_GEMM(matrix_shape, dtype=torch.float16, device=None, number=50):
+    print(f"matrix shape: {matrix_shape}")
+
+    if device is None:
+        device = get_device()
+        print(f"device is None, automatically set to {device}")
+    device = torch.device(device)
+    print(f"device is {device}")
+
+    (m, k, n) = matrix_shape
+    # get bytes based on the dtype
+    bytes_per_element = get_bytes_by_dtype(dtype)
+    print(f"dtype is {dtype}, bytes_per_element: {bytes_per_element}")
+    t = timer_GEMM(m=m, k=k, n=n, dtype=dtype, device=device, number=number)
 
     x = t.timeit(number=number)
     number_FLOPS = 2 * m * n * k
