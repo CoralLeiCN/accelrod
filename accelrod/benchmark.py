@@ -63,7 +63,7 @@ def timer_GEMM(m, k, n, dtype=torch.float32, device=None, number=50) -> benchmar
     c = torch.randn(m, n, dtype=dtype, device=device)
 
     t = benchmark.Timer(
-        stmt=f"a @ b + c; torch.{device}.synchronize()",
+        stmt=f"d = a @ b + c; torch.{device}.synchronize()",
         globals={"a": a, "b": b, "c": c},
     )
     return t
