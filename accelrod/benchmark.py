@@ -29,11 +29,19 @@ def plot_result(df):
     plt.show()
 
 
-def benchmark_GEMM_wrapper(dtype=torch.float32, number=50):
+def benchmark_GEMM_wrapper(device=None, dtype=torch.float32, number=50):
     """
     run the benchmark for GEMM with different matrix size
     """
+
+    if device is None:
+        device = get_device()
+        print(f"device is None, automatically set to {device}")
+    device = torch.device(device)
+    print(f"device is {device}")
+
     bytes_per_element = get_bytes_by_dtype(dtype)
+    print(f"dtype is {dtype}, bytes_per_element: {bytes_per_element}")
     # convert MB to bytes
     total_free_bytes = get_gpu_free_memory() * 0.8 * 1024**2
 
@@ -43,7 +51,9 @@ def benchmark_GEMM_wrapper(dtype=torch.float32, number=50):
     # Using your existing max_n value
     sequence = get_power_of_two_sequence(max_n)
     max_n = max(sequence)
-    print(get_gpu_free_memory())
+
+    print(f"Free memory is {get_gpu_free_memory()} MiB")
+    print(f"maximum matrix size is {max_n}")
 
     result = []
     for n in sequence:
@@ -51,6 +61,7 @@ def benchmark_GEMM_wrapper(dtype=torch.float32, number=50):
             benchmark_GEMM(
                 matrix_shape=(max_n, n, max_n),
                 dtype=dtype,
+                device=device,
                 number=number,
             )
         )
@@ -71,19 +82,10 @@ def timer_GEMM(m, k, n, dtype=torch.float32, device=None, number=50) -> benchmar
     return x
 
 
-def benchmark_GEMM(matrix_shape, dtype=torch.float16, device=None, number=50):
-    print(f"matrix shape: {matrix_shape}")
-
-    if device is None:
-        device = get_device()
-        print(f"device is None, automatically set to {device}")
-    device = torch.device(device)
-    print(f"device is {device}")
-
+def benchmark_GEMM(matrix_shape, dtype, device, number):
     (m, k, n) = matrix_shape
     # get bytes based on the dtype
     bytes_per_element = get_bytes_by_dtype(dtype)
-    print(f"dtype is {dtype}, bytes_per_element: {bytes_per_element}")
     x = timer_GEMM(m=m, k=k, n=n, dtype=dtype, device=device, number=number)
 
     number_FLOPS = 2 * m * n * k + m * n
