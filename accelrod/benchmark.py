@@ -85,9 +85,9 @@ def benchmark_GEMM(matrix_shape, dtype=torch.float16, device=None, number=50):
     t = timer_GEMM(m=m, k=k, n=n, dtype=dtype, device=device, number=number)
 
     x = t.timeit(number=number)
-    number_FLOPS = 2 * m * n * k
+    number_FLOPS = 2 * m * n * k + m * n
     number_bytes_accesses = bytes_per_element * (
-        m * k + k * n + m * n
+        m * k + k * n + 2 * m * n
     )  # acccess all the data one time
     # arithmetic intensity to the ops:byte ratio of the GPU
     arithmetic_intensity = number_FLOPS / number_bytes_accesses
