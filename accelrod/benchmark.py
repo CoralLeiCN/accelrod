@@ -82,11 +82,9 @@ def timer_GEMM(m, k, n, dtype=torch.float32, device=None, number=50) -> benchmar
     return x
 
 
-def benchmark_GEMM(matrix_shape, dtype, device, number):
-    (m, k, n) = matrix_shape
+def calculate_arithmetic_intensity(m, k, n, dtype):
     # get bytes based on the dtype
     bytes_per_element = get_bytes_by_dtype(dtype)
-    x = timer_GEMM(m=m, k=k, n=n, dtype=dtype, device=device, number=number)
 
     number_FLOPS = 2 * m * n * k + m * n
     number_bytes_accesses = bytes_per_element * (
@@ -95,9 +93,18 @@ def benchmark_GEMM(matrix_shape, dtype, device, number):
     # arithmetic intensity to the ops:byte ratio of the GPU
     arithmetic_intensity = number_FLOPS / number_bytes_accesses
 
+    return arithmetic_intensity, number_FLOPS
+
+
+def benchmark_GEMM(matrix_shape, dtype, device, number):
+    (m, k, n) = matrix_shape
+    # get bytes based on the dtype
+    x = timer_GEMM(m=m, k=k, n=n, dtype=dtype, device=device, number=number)
+
+    arithmetic_intensity, number_FLOPS = calculate_arithmetic_intensity(m, k, n, dtype)
+
     # median tflops
     tflops = number_FLOPS / x.mean / 1e12
-
     print(f"tflops: {tflops}, x: {x.mean}, arithmetic_intensity: {arithmetic_intensity}")
 
     return tflops, x, arithmetic_intensity
