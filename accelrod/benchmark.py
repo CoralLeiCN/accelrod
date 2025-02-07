@@ -87,9 +87,9 @@ def calculate_arithmetic_intensity(m, k, n, dtype):
     bytes_per_element = get_bytes_by_dtype(dtype)
 
     number_FLOPS = 2 * m * n * k + m * n
-    number_bytes_accesses = bytes_per_element * (
-        m * k + k * n + 2 * m * n
-    )  # acccess all the data one time
+
+    # acccess all the data one time, including read and write
+    number_bytes_accesses = bytes_per_element * (m * k + k * n + 2 * m * n)
     # arithmetic intensity to the ops:byte ratio of the GPU
     arithmetic_intensity = number_FLOPS / number_bytes_accesses
 
