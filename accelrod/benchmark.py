@@ -108,3 +108,13 @@ def benchmark_GEMM(matrix_shape, dtype, device, number):
     print(f"tflops: {tflops}, x: {x.mean}, arithmetic_intensity: {arithmetic_intensity}")
 
     return tflops, x, arithmetic_intensity
+
+
+def benchmark(algorithm="GEMM"):
+    """
+    Main function to run the benchmark
+    """
+    result = benchmark_GEMM_wrapper()
+    df = to_pandas(result)
+    plot_result(df)
+    return df
