@@ -46,10 +46,10 @@ def benchmark_GEMM_wrapper(device=None, dtype=torch.float32, number=50):
 
     bytes_per_element = get_bytes_by_dtype(dtype)
     print(f"dtype is {dtype}, bytes_per_element: {bytes_per_element}")
-    # convert MB to bytes
+    # total free bytes to use, convert MB to bytes
     total_free_bytes = get_gpu_free_memory() * 0.8 * 1024**2
 
-    # calculate the max_n based on the free memory
+    # calculate the max_n based on the free memory, 4 is four matrices, A, B, C, and D.
     max_n = np.sqrt(total_free_bytes / 4 / bytes_per_element)
 
     # Using your existing max_n value
