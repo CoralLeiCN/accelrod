@@ -30,8 +30,18 @@ def plot_result(df):
 
 
 def benchmark_GEMM_wrapper(device=None, dtype=torch.float32, number=50):
-    """
-    run the benchmark for GEMM with different matrix size
+    """Run the benchmark for General Matrix Multiplication (GEMM) with different matrix sizes and data types.
+
+    Args:
+        device (Union[str, torch.device, None]): The device to run the benchmark on.
+            If None, it will automatically set to the available device. Defaults to None.
+        dtype (torch.dtype, optional): The data type of the matrices.
+            Defaults to torch.float32.
+        number (int, optional): The number of times to run the benchmark for each matrix size.
+            Defaults to 50.
+
+    Returns:
+        list: A list of benchmark results for each matrix size in the sequence.
     """
 
     if device is None:
