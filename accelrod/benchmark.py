@@ -17,7 +17,7 @@ def get_bytes_by_dtype(dtype):
 
 
 def to_pandas(result):
-    df = pd.DataFrame(result, columns=["tflops", "time", "arithmetic_intensity"])
+    df = pd.DataFrame(result, columns=["tflops", "time", "arithmetic_intensity", "dtype"])
     df["mean_time"] = df["time"].apply(lambda x: x.mean)
     return df
 
@@ -173,7 +173,7 @@ def benchmark_GEMM(matrix_dim, dtype, device, number):
     tflops = number_FLOPS / x.mean / 1e12
     print(f"tflops: {tflops}, x: {x.mean}, arithmetic_intensity: {arithmetic_intensity}")
 
-    return tflops, x, arithmetic_intensity
+    return tflops, x, arithmetic_intensity, dtype
 
 
 def benchrun(algorithm="GEMM", device="auto", as_dataframe="pandas"):
