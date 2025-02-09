@@ -133,7 +133,7 @@ def calculate_arithmetic_intensity(m, k, n, dtype):
 
 def benchmark_GEMM(matrix_dim, dtype, device, number):
     """
-    Benchmarks the General Matrix Multiply (GEMM) operation.
+    Benchmarks the General Matrix Multiply (GEMM) operation for a given matrix size.
 
     Parameters:
     matrix_dim (tuple): A tuple (m, k, n) representing the dimensions of the matrices involved in the GEMM operation.
