@@ -102,6 +102,22 @@ def timer_GEMM(m, k, n, dtype=torch.float32, device=None, number=50) -> benchmar
 
 
 def calculate_arithmetic_intensity(m, k, n, dtype):
+    """
+    calculate the arithmetic intensity of the GEMM operation given the matrix size
+
+    Args:
+    m (int): Number of rows in matrices A and C
+    k (int): Number of columns in matrix A and rows in matrix B
+    n (int): Number of columns in matrices B and C
+    dtype (torch.dtype): Data type of the matrx
+
+    Returns:
+        arithmetic_intensity (float): arithmetic intensity of the GEMM operation
+        number_FLOPS (int): number of FLOPS of the GEMM operation
+
+
+    """
+
     # get bytes based on the dtype
     bytes_per_element = get_bytes_by_dtype(dtype)
 
