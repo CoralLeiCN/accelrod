@@ -31,7 +31,7 @@ def plot_result(df):
     plt.show()
 
 
-def benchmark_GEMM_wrapper(device=None, dtype=[torch.float32], number=50):
+def benchmark_GEMM_wrapper(device=None, dtype=[torch.float32], max_dimension=None, number=50):
     """Run the benchmark for General Matrix Multiplication (GEMM) with different matrix sizes and data types.
 
     Args:
@@ -51,9 +51,11 @@ def benchmark_GEMM_wrapper(device=None, dtype=[torch.float32], number=50):
     # total free bytes to use, convert MB to bytes
     total_free_bytes = get_gpu_free_memory() * 0.8 * 1024**2
 
-    # calculate the max_n based on the free memory, 4 is four matrices, A, B, C, and D.
-    max_n = np.sqrt(total_free_bytes / 4 / bytes_per_element)
-
+    if max_dimension is None:
+        # calculate the max_n based on the free memory, 4 is four matrices, A, B, C, and D.
+        max_n = np.sqrt(total_free_bytes / 4 / bytes_per_element)
+    else:
+        max_n = max_dimension
     # Using your existing max_n value
     sequence = get_power_of_two_sequence(max_n)
     max_n = max(sequence)
@@ -176,7 +178,7 @@ def benchmark_GEMM(matrix_dim, dtype, device, number):
     return tflops, x, arithmetic_intensity, dtype
 
 
-def benchrun(algorithm="GEMM", device="auto", as_dataframe="pandas"):
+def benchrun(algorithm="GEMM", device="auto", as_dataframe="pandas", params=None):
     """
     Main function to run the benchmark.
     """
@@ -188,7 +190,7 @@ def benchrun(algorithm="GEMM", device="auto", as_dataframe="pandas"):
     print(f"device is {device}")
 
     if algorithm == "GEMM":
-        result = benchmark_GEMM_wrapper(device=device)
+        result = benchmark_GEMM_wrapper(device=device, **params)
     else:
         raise ValueError(f"algorithm {algorithm} is not implemented")
 
