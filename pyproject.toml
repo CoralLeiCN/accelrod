@@ -7,8 +7,9 @@ requires-python = ">=3.12"
 dependencies = [
     "matplotlib>=3.10.0",
     "pandas>=2.2.3",
-    "torch",
-    "torchvision",
+    "plotly>=6.0.0",
+    "torch>=2.5.1",
+    "torchvision>=0.20.1",
 ]
 
 [dependency-groups]
