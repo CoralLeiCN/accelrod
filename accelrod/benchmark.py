@@ -69,6 +69,25 @@ def benchmark_GEMM_wrapper(device=None, dtype=torch.float32, number=50):
 
 
 def timer_GEMM(m, k, n, dtype=torch.float32, device=None, number=50) -> benchmark.Timer:
+    """Times the execution of a General Matrix Multiplication (GEMM) operation.
+
+    Performs the operation D = A @ B + C where:
+    - A is an m x k matrix
+    - B is a k x n matrix
+    - C is an m x n matrix
+    The matrices are initialized with random values.
+
+    Args:
+        m (int): Number of rows in matrices A and C
+        k (int): Number of columns in matrix A and rows in matrix B
+        n (int): Number of columns in matrices B and C
+        dtype (torch.dtype, optional): Data type of the matrices. Defaults to torch.float32.
+        device (torch.device, optional): Device to run the computation on. Defaults to None.
+        number (int, optional): Number of iterations for timing. Defaults to 50.
+
+    Returns:
+        benchmark.Timer: Timer object containing result for the GEMM operation.
+    """
     a = torch.randn(m, k, dtype=dtype, device=device)
     b = torch.randn(k, n, dtype=dtype, device=device)
     c = torch.randn(m, n, dtype=dtype, device=device)
