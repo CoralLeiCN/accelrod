@@ -13,5 +13,8 @@ lock dependencies declared in a pyproject.toml
 
 
 
-# add dev dependencies
+## add dev dependencies
 uv add --dev ruff pytest
+
+## install 
+uv pip install -e .[all,dev]
