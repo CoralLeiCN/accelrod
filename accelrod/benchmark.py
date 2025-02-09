@@ -44,12 +44,6 @@ def benchmark_GEMM_wrapper(device=None, dtype=torch.float32, number=50):
         list: A list of benchmark results for each matrix size in the sequence.
     """
 
-    if device is None:
-        device = get_device()
-        print(f"device is None, automatically set to {device}")
-    device = torch.device(device)
-    print(f"device is {device}")
-
     bytes_per_element = get_bytes_by_dtype(dtype)
     print(f"dtype is {dtype}, bytes_per_element: {bytes_per_element}")
     # convert MB to bytes
@@ -171,7 +165,7 @@ def benchmark_GEMM(matrix_dim, dtype, device, number):
     return tflops, x, arithmetic_intensity
 
 
-def benchmark(algorithm="GEMM"):
+def benchmark(algorithm="GEMM", device="auto"):
     """
     Main function to run the benchmark.
     """
@@ -179,6 +173,13 @@ def benchmark(algorithm="GEMM"):
         result = benchmark_GEMM_wrapper()
     else:
         raise ValueError(f"algorithm {algorithm} is not implemented")
+
+    if device == "auto":
+        device = get_device()
+        print(f"device is auto, automatically set to {device}")
+    else:
+        device = torch.device(device)
+    print(f"device is {device}")
 
     df = to_pandas(result)
     plot_result(df)
