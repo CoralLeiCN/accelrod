@@ -142,20 +142,20 @@ def calculate_arithmetic_intensity(m, k, n, dtype):
 
 
 def benchmark_GEMM(matrix_dim, dtype, device, number):
-    """
-    Benchmarks the General Matrix Multiply (GEMM) operation for a given matrix size.
+    """Benchmarks the General Matrix Multiply (GEMM) operation for a given matrix size.
 
-    Parameters:
-    matrix_dim (tuple): A tuple (m, k, n) representing the dimensions of the matrices involved in the GEMM operation.
-    dtype (str): The data type of the matrices (e.g., 'float32', 'float64').
-    device (str): The device on which to perform the GEMM operation (e.g., 'cpu', 'cuda').
-    number (int): The number of times to repeat the GEMM operation for benchmarking.
+    Args:
+        matrix_dim (tuple): A tuple (m, k, n) representing the dimensions of the matrices
+            involved in the GEMM operation.
+        dtype (str): The data type of the matrices (e.g., 'torch.float32', 'torch.float16').
+        device (str): The device on which to perform the GEMM operation (e.g., 'cpu', 'cuda').
+        number (int): The number of times to repeat the GEMM operation for benchmarking.
 
     Returns:
-    tuple: A tuple containing:
-        - tflops (float): The median teraflops achieved during the GEMM operation.
-        - x (float): The mean time taken for the GEMM operation.
-        - arithmetic_intensity (float): The arithmetic intensity of the GEMM operation.
+        tuple:
+            tflops (float): The median teraflops achieved during the GEMM operation.
+            x (benchmark.Timer): Timer object containing result for the GEMM operation.
+            arithmetic_intensity (float): The arithmetic intensity of the GEMM operation.
     """
     (m, k, n) = matrix_dim
     # get bytes based on the dtype
