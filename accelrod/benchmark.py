@@ -3,6 +3,7 @@ from itertools import product
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import plotly.express as px
 import torch
 from torch.utils import benchmark
 
@@ -24,11 +25,35 @@ def to_pandas(result):
 
 def plot_result(df):
     # plot the results, tflops against arithmetic intensity
-    plt.plot(df["arithmetic_intensity"], df["tflops"], "o-")
-    plt.xlabel("Arithmetic Intensity")
-    plt.ylabel("TFLOPS")
-    plt.title("Performance")
-    plt.show()
+
+    fig = px.line(
+        df,  # DataFrame
+        x="arithmetic_intensity",
+        y="tflops",
+        color="dtype",  # group by dtype
+        title="Performance vs Arithmetic Intensity by Data Type",
+        hover_data=["tflops", "arithmetic_intensity", "dtype"],
+    )
+
+    # Add scatter points on top of lines
+    scatter_traces = px.scatter(df, x="arithmetic_intensity", y="tflops", color="dtype").data
+
+    for scatter in scatter_traces:
+        scatter.showlegend = False
+        fig.add_trace(scatter)
+
+    # Update layout
+    fig.update_layout(
+        xaxis_title="Arithmetic Intensity",
+        yaxis_title="TFLOPS",
+        legend_title="Data Type",
+        plot_bgcolor="white",
+        xaxis=dict(showgrid=True, gridwidth=1, gridcolor="lightgray"),
+        yaxis=dict(showgrid=True, gridwidth=1, gridcolor="lightgray"),
+    )
+
+    # Show the plot
+    fig.show()
 
 
 def benchmark_GEMM_wrapper(device=None, dtype=[torch.float32], max_dimension=None, number=50):
@@ -196,5 +221,5 @@ def benchrun(algorithm="GEMM", device="auto", as_dataframe="pandas", params=None
 
     if as_dataframe == "pandas":
         result = to_pandas(result)
-    plot_result(result)
+    # plot_result(result)
     return result
