@@ -165,7 +165,7 @@ def benchmark_GEMM(matrix_dim, dtype, device, number):
     return tflops, x, arithmetic_intensity
 
 
-def benchmark(algorithm="GEMM", device="auto"):
+def benchmark(algorithm="GEMM", device="auto", as_dataframe="pandas"):
     """
     Main function to run the benchmark.
     """
@@ -177,10 +177,11 @@ def benchmark(algorithm="GEMM", device="auto"):
     print(f"device is {device}")
 
     if algorithm == "GEMM":
-        result = benchmark_GEMM_wrapper()
+        result = benchmark_GEMM_wrapper(device=device)
     else:
         raise ValueError(f"algorithm {algorithm} is not implemented")
 
-    df = to_pandas(result)
-    plot_result(df)
-    return df
+    if as_dataframe == "pandas":
+        result = to_pandas(result)
+    plot_result(result)
+    return result
