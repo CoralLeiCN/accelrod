@@ -12,11 +12,21 @@ dependencies = [
     "torchvision>=0.20.1",
 ]
 
+[build-system]
+requires = ["setuptools>=68.0.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]  # list of folders that contain the packages (["."] by default)
+include = ["accelrod*"]  # package names should match these glob patterns
+exclude = ["accelrod.tests*", "accelrod.examples*"]  # exclude packages matching these patterns
+
 [dependency-groups]
 dev = [
     "ipykernel>=6.29.5",
     "pytest>=8.3.4",
     "ruff>=0.9.3",
+    "setuptools"
 ]
 all = [
     "nbformat>=5.10.4",

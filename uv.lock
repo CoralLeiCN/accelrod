@@ -10,7 +10,7 @@ resolution-markers = [
 [[package]]
 name = "accelrod"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "matplotlib" },
     { name = "pandas" },
@@ -33,6 +33,7 @@ dev = [
     { name = "ipykernel" },
     { name = "pytest" },
     { name = "ruff" },
+    { name = "setuptools" },
 ]
 
 [package.metadata]
@@ -54,6 +55,7 @@ dev = [
     { name = "ipykernel", specifier = ">=6.29.5" },
     { name = "pytest", specifier = ">=8.3.4" },
     { name = "ruff", specifier = ">=0.9.3" },
+    { name = "setuptools" },
 ]
 
 [[package]]
