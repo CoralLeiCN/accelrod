@@ -1,3 +1,5 @@
+from itertools import product
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -29,7 +31,7 @@ def plot_result(df):
     plt.show()
 
 
-def benchmark_GEMM_wrapper(device=None, dtype=torch.float32, number=50):
+def benchmark_GEMM_wrapper(device=None, dtype=[torch.float32], number=50):
     """Run the benchmark for General Matrix Multiplication (GEMM) with different matrix sizes and data types.
 
     Args:
@@ -44,7 +46,7 @@ def benchmark_GEMM_wrapper(device=None, dtype=torch.float32, number=50):
         list: A list of benchmark results for each matrix size in the sequence.
     """
 
-    bytes_per_element = get_bytes_by_dtype(dtype)
+    bytes_per_element = get_bytes_by_dtype(torch.float32)
     print(f"dtype is {dtype}, bytes_per_element: {bytes_per_element}")
     # total free bytes to use, convert MB to bytes
     total_free_bytes = get_gpu_free_memory() * 0.8 * 1024**2
@@ -58,17 +60,23 @@ def benchmark_GEMM_wrapper(device=None, dtype=torch.float32, number=50):
 
     print(f"Free memory is {get_gpu_free_memory()} MiB")
     print(f"maximum matrix size is {max_n}")
+    print(f"Run GEMM on data type {dtype}")
 
-    result = []
-    for n in sequence:
-        result.append(
-            benchmark_GEMM(
-                matrix_shape=(max_n, n, max_n),
-                dtype=dtype,
+    # all the combinations of dtype and different k.
+    cartesian_product = list(product(dtype, sequence))
+
+    result = list(
+        map(
+            lambda cart_prod: benchmark_GEMM(
+                matrix_dim=(max_n, cart_prod[1], max_n),
+                dtype=cart_prod[0],
                 device=device,
-                number=number,
-            )
+                number=50,
+            ),
+            cartesian_product,
         )
+    )
+
     return result
 
 
@@ -151,6 +159,9 @@ def benchmark_GEMM(matrix_dim, dtype, device, number):
             x (benchmark.Timer): Timer object containing result for the GEMM operation.
             arithmetic_intensity (float): The arithmetic intensity of the GEMM operation.
     """
+    # print arguments
+    print(f"matrix_dim: {matrix_dim}, dtype: {dtype}, device: {device}, number: {number}")
+
     (m, k, n) = matrix_dim
     # get bytes based on the dtype
     x = timer_GEMM(m=m, k=k, n=n, dtype=dtype, device=device, number=number)
@@ -165,7 +176,7 @@ def benchmark_GEMM(matrix_dim, dtype, device, number):
     return tflops, x, arithmetic_intensity
 
 
-def benchmark(algorithm="GEMM", device="auto", as_dataframe="pandas"):
+def benchrun(algorithm="GEMM", device="auto", as_dataframe="pandas"):
     """
     Main function to run the benchmark.
     """
