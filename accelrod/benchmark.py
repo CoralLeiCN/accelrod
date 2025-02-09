@@ -131,12 +131,12 @@ def calculate_arithmetic_intensity(m, k, n, dtype):
     return arithmetic_intensity, number_FLOPS
 
 
-def benchmark_GEMM(matrix_shape, dtype, device, number):
+def benchmark_GEMM(matrix_dim, dtype, device, number):
     """
     Benchmarks the General Matrix Multiply (GEMM) operation.
 
     Parameters:
-    matrix_shape (tuple): A tuple (m, k, n) representing the dimensions of the matrices involved in the GEMM operation.
+    matrix_dim (tuple): A tuple (m, k, n) representing the dimensions of the matrices involved in the GEMM operation.
     dtype (str): The data type of the matrices (e.g., 'float32', 'float64').
     device (str): The device on which to perform the GEMM operation (e.g., 'cpu', 'cuda').
     number (int): The number of times to repeat the GEMM operation for benchmarking.
@@ -147,13 +147,14 @@ def benchmark_GEMM(matrix_shape, dtype, device, number):
         - x (float): The mean time taken for the GEMM operation.
         - arithmetic_intensity (float): The arithmetic intensity of the GEMM operation.
     """
-    (m, k, n) = matrix_shape
+    (m, k, n) = matrix_dim
     # get bytes based on the dtype
     x = timer_GEMM(m=m, k=k, n=n, dtype=dtype, device=device, number=number)
 
     arithmetic_intensity, number_FLOPS = calculate_arithmetic_intensity(m, k, n, dtype)
 
-    # median tflops
+    # mean tflops
+    # statistics in pytorch timer are bugged, for instance mean and median are the same.
     tflops = number_FLOPS / x.mean / 1e12
     print(f"tflops: {tflops}, x: {x.mean}, arithmetic_intensity: {arithmetic_intensity}")
 
