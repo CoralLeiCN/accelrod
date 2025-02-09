@@ -173,9 +173,13 @@ def benchmark_GEMM(matrix_dim, dtype, device, number):
 
 def benchmark(algorithm="GEMM"):
     """
-    Main function to run the benchmark
+    Main function to run the benchmark.
     """
-    result = benchmark_GEMM_wrapper()
+    if algorithm == "GEMM":
+        result = benchmark_GEMM_wrapper()
+    else:
+        raise ValueError(f"algorithm {algorithm} is not implemented")
+
     df = to_pandas(result)
     plot_result(df)
     return df
