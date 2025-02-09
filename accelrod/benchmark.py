@@ -16,7 +16,7 @@ def get_bytes_by_dtype(dtype):
 
 def to_pandas(result):
     df = pd.DataFrame(result, columns=["tflops", "time", "arithmetic_intensity"])
-    df["median_time"] = df["time"].apply(lambda x: x.median)
+    df["mean_time"] = df["time"].apply(lambda x: x.mean)
     return df
 
 
