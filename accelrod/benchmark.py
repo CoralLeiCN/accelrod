@@ -169,17 +169,17 @@ def benchmark(algorithm="GEMM", device="auto"):
     """
     Main function to run the benchmark.
     """
-    if algorithm == "GEMM":
-        result = benchmark_GEMM_wrapper()
-    else:
-        raise ValueError(f"algorithm {algorithm} is not implemented")
-
     if device == "auto":
         device = get_device()
         print(f"device is auto, automatically set to {device}")
     else:
         device = torch.device(device)
     print(f"device is {device}")
+
+    if algorithm == "GEMM":
+        result = benchmark_GEMM_wrapper()
+    else:
+        raise ValueError(f"algorithm {algorithm} is not implemented")
 
     df = to_pandas(result)
     plot_result(df)
