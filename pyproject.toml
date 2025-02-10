@@ -1,6 +1,8 @@
 [project]
 name = "accelrod"
-version = "0.1.0"
+dynamic = [
+  'version'
+]
 description = "A library for benchmarking the tflops of accelerators"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -20,6 +22,9 @@ build-backend = "setuptools.build_meta"
 where = ["."]  # list of folders that contain the packages (["."] by default)
 include = ["accelrod*"]  # package names should match these glob patterns
 exclude = ["accelrod.tests*", "accelrod.examples*"]  # exclude packages matching these patterns
+
+[tool.setuptools.dynamic]
+version = {attr = "accelrod.__version__"}
 
 [dependency-groups]
 dev = [
