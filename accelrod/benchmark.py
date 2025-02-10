@@ -18,7 +18,9 @@ def get_bytes_by_dtype(dtype):
 
 
 def to_pandas(result):
-    df = pd.DataFrame(result, columns=["tflops", "time", "arithmetic_intensity", "dtype"])
+    df = pd.DataFrame(
+        result, columns=["tflops", "time", "arithmetic_intensity", "dtype"]
+    )
     df["dtype"] = df["dtype"].astype(str)
     df["mean_time"] = df["time"].apply(lambda x: x.mean)
     return df
@@ -37,7 +39,9 @@ def plot_result(df):
     )
 
     # Add scatter points on top of lines
-    scatter_traces = px.scatter(df, x="arithmetic_intensity", y="tflops", color="dtype").data
+    scatter_traces = px.scatter(
+        df, x="arithmetic_intensity", y="tflops", color="dtype"
+    ).data
 
     for scatter in scatter_traces:
         scatter.showlegend = False
@@ -57,7 +61,9 @@ def plot_result(df):
     fig.show()
 
 
-def benchmark_GEMM_wrapper(device=None, dtype=[torch.float32], max_dimension=None, number=50):
+def benchmark_GEMM_wrapper(
+    device=None, dtype=[torch.float32], max_dimension=None, number=50
+):
     """Run the benchmark for General Matrix Multiplication (GEMM) with different matrix sizes and data types.
 
     Args:
@@ -188,7 +194,9 @@ def benchmark_GEMM(matrix_dim, dtype, device, number):
             arithmetic_intensity (float): The arithmetic intensity of the GEMM operation.
     """
     # print arguments
-    print(f"matrix_dim: {matrix_dim}, dtype: {dtype}, device: {device}, number: {number}")
+    print(
+        f"matrix_dim: {matrix_dim}, dtype: {dtype}, device: {device}, number: {number}"
+    )
 
     (m, k, n) = matrix_dim
     # get bytes based on the dtype
@@ -199,7 +207,9 @@ def benchmark_GEMM(matrix_dim, dtype, device, number):
     # mean tflops
     # statistics in pytorch timer are bugged, for instance mean and median are the same.
     tflops = number_FLOPS / x.mean / 1e12
-    print(f"tflops: {tflops}, x: {x.mean}, arithmetic_intensity: {arithmetic_intensity}")
+    print(
+        f"tflops: {tflops}, x: {x.mean}, arithmetic_intensity: {arithmetic_intensity}"
+    )
 
     return tflops, x, arithmetic_intensity, dtype
 
