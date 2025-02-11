@@ -70,6 +70,7 @@ jobs:
         
     - name: Merge files from different dir
       run: |
+        mkdir ./dist
         mv ./all/*/* ./dist/
 
 
@@ -94,8 +95,8 @@ jobs:
     - name: Download all the dists
       uses: actions/download-artifact@v4
       with:
-        pattern: python-package-distributions-*
-        path: dist/*
+        pattern: python-package-distributions-3.12*
+        path: all/
 
     - name: Merge files from different dir
       # force overwrite as currently the build generate same files for different python versions
