@@ -60,18 +60,19 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         # matrix.python-version and strategy.job-index no longer available, use pattern.
-        pattern: python-package-distributions-*
-        path: dist/
+        # currently the build generate same files for different python versions
+        pattern: python-package-distributions-3.12*
+        path: all/
 
     - name: Sanity check download artifact
       run: |
-        ls -R ./dist
-
+        ls -R ./all
+        
     - name: Merge files from different dir
-      # force overwrite as currently the build generate same files for different python versions
       run: |
-        mv -f ./dist/*/* ./dist/
-    
+        mv ./all/*/* ./dist/
+
+
     - name: Publish distribution 📦 to TestPyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
