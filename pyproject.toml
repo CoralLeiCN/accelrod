@@ -5,7 +5,7 @@ dynamic = [
 ]
 description = "A library for benchmarking the tflops of accelerators"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 dependencies = [
     "matplotlib>=3.10.0",
     "pandas>=2.2.3",
@@ -15,6 +15,8 @@ dependencies = [
 ]
 classifiers=[
     "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
 ]
