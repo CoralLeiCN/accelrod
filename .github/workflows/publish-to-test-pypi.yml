@@ -100,6 +100,7 @@ jobs:
     - name: Merge files from different dir
       # force overwrite as currently the build generate same files for different python versions
       run: |
+        mkdir ./dist
         mv -f ./dist/*/* ./dist/
     
 
