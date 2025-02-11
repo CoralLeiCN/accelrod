@@ -102,7 +102,7 @@ jobs:
       # force overwrite as currently the build generate same files for different python versions
       run: |
         mkdir ./dist
-        mv -f ./dist/*/* ./dist/
+        mv -f ./all/*/* ./dist/
     
 
     - name: Sign the dists with Sigstore
