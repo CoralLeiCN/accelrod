@@ -8,6 +8,30 @@
 [all] includes nbformat to visualize the result in notebook
 > pip install -U accelrod[all]
 
+## Example
+```
+import torch
+
+from accelrod.benchmark import benchrun, plot_result
+
+# without max_dimension, the matrix size will be determined based on available VRAM
+result = benchrun(
+    algorithm="GEMM",
+    device="auto",
+    as_dataframe="pandas",
+    params={
+        # "max_dimension": 2048,
+        "dtype": [torch.float32, torch.float16, torch.bfloat16],
+    },
+)
+
+# plot in notebook
+import plotly.offline as pyo
+
+pyo.init_notebook_mode()
+plot_result(result)
+
+```
 
 ## Developer guide
 
