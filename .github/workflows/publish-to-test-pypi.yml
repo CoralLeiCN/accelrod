@@ -5,8 +5,9 @@ on:
     # https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions
     branches:
       - main
-    tags-ignore:
-      - '**' # Ignore all tags.
+    tags:
+      - 'v*'
+      - 'v*dev*'
     paths-ignore:
       - 'docs/**'
 
@@ -42,49 +43,13 @@ jobs:
       run: |
         ls ./dist
 
-  publish-to-testpypi:
-    name: Publish Python 🐍 distribution 📦 to TestPyPI
-    needs:
-    - build
-    runs-on: ubuntu-latest
-
-    environment:
-      name: testpypi
-      url: https://test.pypi.org/p/${{ github.event.repository.name }}
-
-    permissions:
-      id-token: write  # IMPORTANT: mandatory for trusted publishing
-
-    steps:
-    - name: Download all the dists
-      uses: actions/download-artifact@v4
-      with:
-        # matrix.python-version and strategy.job-index no longer available, use pattern.
-        # currently the build generate same files for different python versions
-        pattern: python-package-distributions-3.12*
-        path: all/
-
-    - name: Sanity check download artifact
-      run: |
-        ls -R ./all
-        
-    - name: Merge files from different dir
-      run: |
-        mkdir ./dist
-        mv ./all/*/* ./dist/
-
-
-    - name: Publish distribution 📦 to TestPyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        repository-url: https://test.pypi.org/legacy/  
 
   github-release:
     name: >-
       Sign the Python 🐍 distribution 📦 with Sigstore
       and upload them to GitHub Release
     needs:
-    - publish-to-testpypi
+    - build
     runs-on: ubuntu-latest
 
     permissions:
@@ -127,3 +92,41 @@ jobs:
         gh release upload
         '${{ github.ref_name }}' dist/**
         --repo '${{ github.repository }}'
+
+  publish-to-testpypi:
+    name: Publish Python 🐍 distribution 📦 to TestPyPI
+    needs:
+    - github-release
+    if: startsWith(github.ref, 'refs/tags/v*dev*')
+    runs-on: ubuntu-latest
+
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/${{ github.event.repository.name }}
+
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
+
+    steps:
+    - name: Download all the dists
+      uses: actions/download-artifact@v4
+      with:
+        # matrix.python-version and strategy.job-index no longer available, use pattern.
+        # currently the build generate same files for different python versions
+        pattern: python-package-distributions-3.12*
+        path: all/
+
+    - name: Sanity check download artifact
+      run: |
+        ls -R ./all
+        
+    - name: Merge files from different dir
+      run: |
+        mkdir ./dist
+        mv ./all/*/* ./dist/
+
+
+    - name: Publish distribution 📦 to TestPyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        repository-url: https://test.pypi.org/legacy/  
