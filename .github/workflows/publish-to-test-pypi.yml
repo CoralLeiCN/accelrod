@@ -50,7 +50,7 @@ jobs:
       and upload them to GitHub Release
     needs:
     - build
-    if: startsWith(github.ref, 'refs/tags/v*')
+    if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
 
     permissions:
@@ -98,7 +98,7 @@ jobs:
     name: Publish Python 🐍 distribution 📦 to TestPyPI
     needs:
     - github-release
-    if: startsWith(github.ref, 'refs/tags/v*dev*')
+    if: startsWith(github.ref, 'refs/tags/v') && contains(github.ref, 'dev')  
     runs-on: ubuntu-latest
 
     environment:
@@ -136,7 +136,7 @@ jobs:
     name: >-
       Publish Python 🐍 distribution 📦 to PyPI
     # only publish to PyPI on tag pushes startswith 'v' and not contains 'dev'  
-    if: startsWith(github.ref, 'refs/tags/v*') && !contains(github.ref, 'refs/tags/*dev')  
+    if: startsWith(github.ref, 'refs/tags/v') && !contains(github.ref, 'dev')  
     needs:
     - github-release
     runs-on: ubuntu-latest
