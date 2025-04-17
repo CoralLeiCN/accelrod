@@ -15,6 +15,7 @@ jobs:
   build:
     name: Build distribution 📦
     runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
     strategy:
       matrix:
         python-version: ["3.12", "3.13"]
